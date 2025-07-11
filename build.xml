@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<project name="ProDiffjEdit" default="jar" basedir=".">
+
+    <property name="src.dir" value="src"/>
+    <property name="build.dir" value="build"/>
+    <property name="lib.dir" location="lib" />
+
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+        <delete file="jedit.jar"/>
+    </target>
+
+    <target name="init" depends="clean">
+        <mkdir dir="${build.dir}"/>
+    </target>
+
+    <target name="copy-resources">
+        <copy todir="build">
+            <fileset dir="src">
+                <!-- Exclude common source code file extensions -->
+                <exclude name="**/*.java"/>
+                <exclude name="**/*.class"/>
+            </fileset>
+        </copy>
+    </target>
+    
+    <target name="compile" depends="init,copy-resources">
+    	<javac srcdir="${src.dir}" destdir="build"
+    	 classpath="${lib.dir}/jsr305-1.0.jar;${lib.dir}/swt-windows.jar"/>
+    </target>
+
+   <target name="jar" depends="compile">
+      <jar destfile="jedit.jar">
+         <fileset dir="${build.dir}"/>
+         <zipgroupfileset dir="${lib.dir}" includes="swt-windows.jar"/>
+         <zipgroupfileset dir="${lib.dir}" includes="jsr305-1.0.jar"/>
+         <manifest>
+            <attribute name="Main-Class" value="org.orbisoftware.browser.SWTBrowser"/>
+         </manifest>
+      </jar>
+   </target>
+
+</project>
